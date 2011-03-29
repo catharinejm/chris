@@ -7,6 +7,7 @@ KEY_Q = 81;
 KEY_W = 87;
 KEY_1 = 49;
 KEY_2 = 50;
+KEY_S = 83;
 
 $(function() {
     var windowDiv = $("#window");
@@ -15,6 +16,7 @@ $(function() {
     var y = 100;
     var radius = 30;
     var fill = "white";
+
     draw();
 
     $(document).keydown(function(event) {
@@ -39,6 +41,8 @@ $(function() {
 	} else if (event.which == KEY_2) {
 	    x = x - 10;
 	    y = y - 10;
+	} else if (event.which == KEY_S) {
+	    fill = "white";
 	}
 	draw();
     });
