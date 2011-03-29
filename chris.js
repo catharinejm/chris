@@ -31,6 +31,9 @@ $(function() {
     var spin = 0;
     var spin2 = 0;
 
+    var door_top_y = 50;
+    var door_bottom_y = 150;
+
     draw();
 
     $(document).keydown(function(event) {
@@ -66,9 +69,18 @@ $(function() {
 	}
     });
 
+    var door_modifier = 1;
+
     setInterval(function() {
 	spin += 6;
 	spin2 -= 6;
+	if (door_top_y >= door_bottom_y) {
+	    door_modifier = -1;
+	} else if (door_top_y <= 50 || door_bottom_y >= 150) {
+	    door_modifier = 1;
+	}
+	door_top_y += door_modifier;
+	door_bottom_y -= door_modifier;
 	draw();
     }, 16);
 
@@ -78,10 +90,10 @@ $(function() {
 	canvas.circle(a, b, c).attr('fill', fill2);
 	canvas.circle(a, b, cc).attr('fill', fill3);
 	canvas.path("M 0 200 L 400 200").attr('stroke', "blue");
-	canvas.path("M 400 0 L 400 50").attr("stroke", "blue");
-	canvas.path("M 400 150 L 400 200").attr("stroke", "blue");
+	canvas.path("M 400 0 L 400 " + door_top_y).attr("stroke", "blue");
+	canvas.path("M 400 " + door_bottom_y + " L 400 200").attr("stroke", "blue");
 	canvas.path('M 400 200 L 500 400 L 300 400 z').attr('stroke', 'blue').rotate(rotate_angle, 400, 200);
 	canvas.path("M 200 50 L 225 75 L 175 75 z").attr({stroke: "red", "stroke-width": 3, fill: "blue"}).rotate(spin, 200, 50);
-	canvas.path("M 200 150 L 225 175 L 175 175 z").attr("stroke", "blue").rotate(spin2, 200, 150);
+	canvas.path("M 200 150 L 225 175 L 175 175 z").attr({stroke: "red", "stroke-width": 3, fill: "blue"}).rotate(spin2, 200, 150);
     }
 });
