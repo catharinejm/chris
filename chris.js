@@ -31,14 +31,13 @@ $(function() {
   var rotate_angle = 0;
   var spin = 0;
   var spin2 = 0;
-  var door_top_y = 50;
-  var door_bottom_y = 150;
   var spin3 = 0;
   var xx = 625
   var yy = 150
   var spin4 = 0;
   var p = 30;
   var o = 1;
+
   var nc1_x = 95;
   var nc1_y1 = 25;
   var nc1_y2 = 200;
@@ -108,17 +107,13 @@ $(function() {
     }
   });
 
-  var door_modifier = 1;
+  var door = createDoor(400, 0, 203, 100);
 
   setInterval(function() {
+    updateDoor(door);
+
     spin += 6;
     spin2 -= 6;
-    if (door_top_y >= door_bottom_y) {
-      door_modifier = -1
-    }  
-    if (door_top_y <= 50 || door_bottom_y >= 150) {
-      door_modifier = 1;
-    }
     if (radius == 0 || 
       (x == nc1_x && 
        y >= nc1_y1 && 
@@ -146,9 +141,11 @@ $(function() {
               y == nc8_y))))))))){
                 location.reload(true)
               }
+
+    if (isHittingDoor(x, y, door)) {
+      console.log("Hit the door!");
+    }
   
-    door_top_y += door_modifier;
-    door_bottom_y -= door_modifier;
     spin3 += 1;
     spin4 += -1;
     draw();
@@ -161,8 +158,9 @@ $(function() {
     canvas.circle(a, b, c).attr('fill', fill2);
     canvas.circle(a, b, cc).attr('fill', fill3);
     canvas.path(nc3).attr({stroke: "blue", "stroke-width": 5});
-    canvas.path("M 400 0 L 400 " + door_top_y).attr({stroke: "blue", "stroke-width": 5});
-    canvas.path("M 400 " + door_bottom_y + " L 400 203").attr({stroke: "blue", "stroke-width": 5});
+
+    canvas.path(generateDoorPath(door));
+
     canvas.path('M 400 200 L 500 400 L 300 400 z').attr('stroke', 'blue').rotate(rotate_angle, 400, 200);
     canvas.path("M 200 50 L 225 75 L 175 75 z").attr({stroke: "red", "stroke-width": 3, fill: "blue"}).rotate(spin, 200, 50);
     canvas.path("M 200 150 L 225 175 L 175 175 z").attr({stroke: "red", "stroke-width": 3, fill: "blue"}).rotate(spin2, 200, 150);
@@ -177,3 +175,48 @@ $(function() {
     canvas.path(nc5).attr({stroke: "blue", "stroke-width": 5});
   }
 });
+
+function createDoor(x, top, bottom, open_length) {
+  var midpoint = (bottom - top) / 2.0;
+  var open_top = midpoint - open_length / 2.0;
+  var open_bottom = midpoint + open_length / 2.0;
+
+  return { 
+    x: x,
+      top: top,
+      bottom: bottom,
+      open_top: open_top,
+      open_bottom: open_bottom,
+      open_length: open_length
+  }
+}
+
+function isHittingDoor(x, y, door) {
+  var is_at_x = x == door.x;
+  var is_inside_top = y >= door.top && y <= door.open_top;
+  var is_inside_bottom = y >= door.bottom && y <= door.open_bottom;
+
+  return is_at_x && (is_inside_top || is_inside_bottom); 
+}
+
+function updateDoor(door) {
+  var midpoint = (door.bottom - door.top) / 2.0;
+  if (door.open_top <= (midpoint - door.open_length / 2.0)) {
+    door.open_top += 1;
+  } else if (door.open_top >= midpoint) {
+    door.open_top -= 1;
+  }
+  if (door.open_bottom <= midpoint) {
+    door.open_bottom += 1;
+  } else if (door.open_bottom >= midpoint + door.open_length / 2.0) {
+    door.open_bottom -= 1;
+  }
+}
+
+function generateDoorPath(door) {
+  var door_path = "M"+door.x+" "+door.top;
+  door_path += "L"+door.x+" "+door.open_top;
+  door_path += "M"+door.x+" "+door.open_bottom;
+  door_path += "L"+door.x+" "+door.bottom;
+  return door_path;
+}
