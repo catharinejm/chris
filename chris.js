@@ -104,7 +104,7 @@ $(function() {
     } else if (event.which == X) {
       a = a - 10;
     } else if (event.which == KEY_3) {
-      javascript:location.reload(true)
+      location.reload(true)
     }
   });
 
@@ -138,11 +138,11 @@ $(function() {
              (x >= nc8_x1 &&
               x <= nc8_x2 &&
               y == nc8_y))))))))){
-                location.reload(true)
+                restart();
               }
 
     if (isHittingDoor(x, y, door)) {
-      console.log("Hit the door!");
+      restart();
     }
   
     spin3 += 1;
@@ -174,6 +174,11 @@ $(function() {
     canvas.path(nc5).attr({stroke: "blue", "stroke-width": 5});
   }
 });
+
+function restart() {
+  alert("Ouch!");
+  location.reload(true);
+}
 
 function createDoor(x, top, bottom, open_length) {
   var midpoint = (bottom - top) / 2.0;
