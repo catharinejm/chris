@@ -71,6 +71,10 @@ $(function() {
 	var nc8_x2 = 800;
 	var nc8_y = 110;
 	var nc8 = 'M'+nc8_x1+' '+nc8_y+'L'+nc8_x2+' '+nc8_y;
+	var st1_x = 200;
+	var st1_y = 50;
+	var st1_z = 30;
+	var st1 = st1_x, st1_y, st1_z;
 
 	
     draw();
@@ -143,7 +147,11 @@ $(function() {
 		y <= nc7_y2 ||
 		(x >= nc8_x1 &&
 		x <= nc8_x2 &&
-		y == nc8_y))))))))){
+		y == nc8_y ||
+		(x >= st1_x &&
+		y >= st1_y &&
+		radius >= st1_z &&
+		radius >= st1_z)))))))))){
 	   location.reload(true)
      }
 	door_top_y += door_modifier;
@@ -163,7 +171,9 @@ $(function() {
 	canvas.path("M 400 0 L 400 " + door_top_y).attr({stroke: "blue", "stroke-width": 5});
 	canvas.path("M 400 " + door_bottom_y + " L 400 203").attr({stroke: "blue", "stroke-width": 5});
 	canvas.path('M 400 200 L 500 400 L 300 400 z').attr('stroke', 'blue').rotate(rotate_angle, 400, 200);
+	canvas.circle(st1_x, st1_y, st1_z).attr('fill', 'red')
 	canvas.path("M 200 50 L 225 75 L 175 75 z").attr({stroke: "red", "stroke-width": 3, fill: "blue"}).rotate(spin, 200, 50);
+	canvas.circle(200, 150, 30).attr('fill', 'red')
 	canvas.path("M 200 150 L 225 175 L 175 175 z").attr({stroke: "red", "stroke-width": 3, fill: "blue"}).rotate(spin2, 200, 150);
 	canvas.path("M 692 150 L 558 150 L 625 83 L 625 217 z").attr({stroke: "green", "stroke-width": 1, fill: "green"}).rotate(spin3, 625, 150);
 	canvas.path("M 692 300 L 558 300 L 625 233 L 625 367 z").attr({stroke: "green", "stroke-width": 1, fill: "green"}).rotate(spin4, 625, 300);
