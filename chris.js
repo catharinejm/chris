@@ -71,6 +71,7 @@ $(function() {
   var nc8_y = 110;
   var nc8 = 'M'+nc8_x1+' '+nc8_y+'L'+nc8_x2+' '+nc8_y;
 
+  var door = createDoor(400, 0, 203, 100);
 
   draw();
 
@@ -106,8 +107,6 @@ $(function() {
       javascript:location.reload(true)
     }
   });
-
-  var door = createDoor(400, 0, 203, 100);
 
   setInterval(function() {
     updateDoor(door);
@@ -159,7 +158,7 @@ $(function() {
     canvas.circle(a, b, cc).attr('fill', fill3);
     canvas.path(nc3).attr({stroke: "blue", "stroke-width": 5});
 
-    canvas.path(generateDoorPath(door));
+    canvas.path(generateDoorPath(door)).attr({stroke: "blue", "stroke-width": 3});
 
     canvas.path('M 400 200 L 500 400 L 300 400 z').attr('stroke', 'blue').rotate(rotate_angle, 400, 200);
     canvas.path("M 200 50 L 225 75 L 175 75 z").attr({stroke: "red", "stroke-width": 3, fill: "blue"}).rotate(spin, 200, 50);
@@ -187,30 +186,27 @@ function createDoor(x, top, bottom, open_length) {
       bottom: bottom,
       open_top: open_top,
       open_bottom: open_bottom,
-      open_length: open_length
+      open_length: open_length,
+      modifier: 1
   }
 }
 
 function isHittingDoor(x, y, door) {
   var is_at_x = x == door.x;
   var is_inside_top = y >= door.top && y <= door.open_top;
-  var is_inside_bottom = y >= door.bottom && y <= door.open_bottom;
+  var is_inside_bottom = y <= door.bottom && y >= door.open_bottom;
 
   return is_at_x && (is_inside_top || is_inside_bottom); 
 }
 
 function updateDoor(door) {
   var midpoint = (door.bottom - door.top) / 2.0;
-  if (door.open_top <= (midpoint - door.open_length / 2.0)) {
-    door.open_top += 1;
-  } else if (door.open_top >= midpoint) {
-    door.open_top -= 1;
+  if (door.open_top < (midpoint - door.open_length / 2.0) ||
+      door.open_top > midpoint) {
+    door.modifier *= -1;
   }
-  if (door.open_bottom <= midpoint) {
-    door.open_bottom += 1;
-  } else if (door.open_bottom >= midpoint + door.open_length / 2.0) {
-    door.open_bottom -= 1;
-  }
+  door.open_top += door.modifier;
+  door.open_bottom -= door.modifier;
 }
 
 function generateDoorPath(door) {
